@@ -1,1 +1,480 @@
-# SPL-MemberDashboard
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Site Business Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f7f6f3;
+            padding: 20px;
+            color: #37352f;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .dashboard-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .dashboard-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: #2d2d2d;
+            margin-bottom: 8px;
+        }
+
+        .dashboard-subtitle {
+            font-size: 16px;
+            color: #787774;
+            margin-bottom: 20px;
+        }
+
+        .time-period-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .period-btn {
+            padding: 8px 16px;
+            border: 1px solid #e1dfdd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .period-btn:hover {
+            background: #f1f0ef;
+        }
+
+        .period-btn.active {
+            background: #2383e2;
+            color: white;
+            border-color: #2383e2;
+        }
+
+        .sites-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .site-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #e1dfdd;
+        }
+
+        .site-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #f1f0ef;
+        }
+
+        .site-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: #2d2d2d;
+        }
+
+        .site-status {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .metric-box {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            transition: all 0.2s;
+        }
+
+        .metric-box:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .metric-label {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d2d2d;
+            margin-bottom: 4px;
+        }
+
+        .metric-change {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .metric-change.positive {
+            color: #22c55e;
+        }
+
+        .metric-change.negative {
+            color: #ef4444;
+        }
+
+        .metric-change.neutral {
+            color: #6c757d;
+        }
+
+        .metric-box.private-pay {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .metric-box.regional-center {
+            border-left: 4px solid #8b5cf6;
+        }
+
+        .metric-box.birthday-parties {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .metric-box.inventory-spend {
+            border-left: 4px solid #ef4444;
+        }
+
+        .summary-section {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #e1dfdd;
+            margin-bottom: 30px;
+        }
+
+        .summary-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2d2d2d;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-metric {
+            text-align: center;
+            padding: 16px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .summary-metric-label {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .summary-metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d2d2d;
+        }
+
+        .data-entry-note {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+        }
+
+        .data-entry-note h3 {
+            color: #856404;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .data-entry-note p {
+            color: #856404;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .instructions {
+            background: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .instructions h3 {
+            color: #1565c0;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+
+        .instructions ol {
+            color: #1565c0;
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 768px) {
+            .sites-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Multi-Site Business Dashboard</h1>
+            <p class="dashboard-subtitle">Track key metrics across all locations</p>
+        </div>
+
+        <div class="time-period-selector">
+            <button class="period-btn active" onclick="selectPeriod('monthly')">Monthly</button>
+            <button class="period-btn" onclick="selectPeriod('quarterly')">Quarterly</button>
+            <button class="period-btn" onclick="selectPeriod('annually')">Annually</button>
+        </div>
+
+        <div class="sites-grid">
+            <!-- Site 1 -->
+            <div class="site-card">
+                <div class="site-header">
+                    <h2 class="site-name">Berkeley</h2>
+                    <div class="site-status"></div>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-box private-pay">
+                        <div class="metric-label">Private Pay Members</div>
+                        <div class="metric-value" id="site1-private">142</div>
+                        <div class="metric-change positive">+8 from last month</div>
+                    </div>
+                    <div class="metric-box regional-center">
+                        <div class="metric-label">Regional Center Members</div>
+                        <div class="metric-value" id="site1-regional">89</div>
+                        <div class="metric-change positive">+3 from last month</div>
+                    </div>
+                    <div class="metric-box birthday-parties">
+                        <div class="metric-label">Birthday Party Rentals</div>
+                        <div class="metric-value" id="site1-parties">23</div>
+                        <div class="metric-change negative">-2 from last month</div>
+                    </div>
+                    <div class="metric-box inventory-spend">
+                        <div class="metric-label">Monthly Inventory Spend</div>
+                        <div class="metric-value" id="site1-inventory">$4,250</div>
+                        <div class="metric-change positive">-$150 from last month</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Site 2 -->
+            <div class="site-card">
+                <div class="site-header">
+                    <h2 class="site-name">San Ramon</h2>
+                    <div class="site-status"></div>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-box private-pay">
+                        <div class="metric-label">Private Pay Members</div>
+                        <div class="metric-value" id="site2-private">186</div>
+                        <div class="metric-change positive">+12 from last month</div>
+                    </div>
+                    <div class="metric-box regional-center">
+                        <div class="metric-label">Regional Center Members</div>
+                        <div class="metric-value" id="site2-regional">67</div>
+                        <div class="metric-change neutral">No change</div>
+                    </div>
+                    <div class="metric-box birthday-parties">
+                        <div class="metric-label">Birthday Party Rentals</div>
+                        <div class="metric-value" id="site2-parties">31</div>
+                        <div class="metric-change positive">+5 from last month</div>
+                    </div>
+                    <div class="metric-box inventory-spend">
+                        <div class="metric-label">Monthly Inventory Spend</div>
+                        <div class="metric-value" id="site2-inventory">$5,680</div>
+                        <div class="metric-change negative">+$230 from last month</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Site 3 -->
+            <div class="site-card">
+                <div class="site-header">
+                    <h2 class="site-name">San Mateo</h2>
+                    <div class="site-status"></div>
+                </div>
+                <div class="metrics-grid">
+                    <div class="metric-box private-pay">
+                        <div class="metric-label">Private Pay Members</div>
+                        <div class="metric-value" id="site3-private">203</div>
+                        <div class="metric-change positive">+15 from last month</div>
+                    </div>
+                    <div class="metric-box regional-center">
+                        <div class="metric-label">Regional Center Members</div>
+                        <div class="metric-value" id="site3-regional">124</div>
+                        <div class="metric-change positive">+7 from last month</div>
+                    </div>
+                    <div class="metric-box birthday-parties">
+                        <div class="metric-label">Birthday Party Rentals</div>
+                        <div class="metric-value" id="site3-parties">41</div>
+                        <div class="metric-change positive">+8 from last month</div>
+                    </div>
+                    <div class="metric-box inventory-spend">
+                        <div class="metric-label">Monthly Inventory Spend</div>
+                        <div class="metric-value" id="site3-inventory">$6,890</div>
+                        <div class="metric-change negative">+$410 from last month</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary-section">
+            <h2 class="summary-title">Network-Wide Summary</h2>
+            <div class="summary-grid">
+                <div class="summary-metric">
+                    <div class="summary-metric-label">Total Private Pay Members</div>
+                    <div class="summary-metric-value" id="total-private">531</div>
+                </div>
+                <div class="summary-metric">
+                    <div class="summary-metric-label">Total Regional Center Members</div>
+                    <div class="summary-metric-value" id="total-regional">280</div>
+                </div>
+                <div class="summary-metric">
+                    <div class="summary-metric-label">Total Birthday Parties</div>
+                    <div class="summary-metric-value" id="total-parties">95</div>
+                </div>
+                <div class="summary-metric">
+                    <div class="summary-metric-label">Total Inventory Spend</div>
+                    <div class="summary-metric-value" id="total-inventory">$16,820</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-entry-note">
+            <h3>📊 Data Source</h3>
+            <p>All metrics are pulled from the monthly MindBody reconciliation spreadsheet completed by site managers. Update these numbers monthly after reconciliation is complete.</p>
+        </div>
+
+        <div class="instructions">
+            <h3>🔧 How to Use This Dashboard in Notion</h3>
+            <ol>
+                <li><strong>Copy this HTML:</strong> Copy the entire HTML code from this dashboard</li>
+                <li><strong>Create an Embed Block:</strong> In your Notion page, type "/embed" and select the Embed block</li>
+                <li><strong>Paste HTML:</strong> Paste the HTML code into a code editor like CodePen, JSFiddle, or host it on GitHub Pages</li>
+                <li><strong>Embed the URL:</strong> Use the live URL in your Notion embed block</li>
+                <li><strong>Update Monthly:</strong> Modify the values in the HTML based on your MindBody reconciliation data</li>
+                <li><strong>Customize:</strong> Replace "[Location Name]" with your actual site names and adjust colors/styling as needed</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for different time periods
+        const data = {
+            monthly: {
+                site1: { private: 142, regional: 89, parties: 23, inventory: 4250 },
+                site2: { private: 186, regional: 67, parties: 31, inventory: 5680 },
+                site3: { private: 203, regional: 124, parties: 41, inventory: 6890 }
+            },
+            quarterly: {
+                site1: { private: 425, regional: 267, parties: 69, inventory: 12750 },
+                site2: { private: 558, regional: 201, parties: 93, inventory: 17040 },
+                site3: { private: 609, regional: 372, parties: 123, inventory: 20670 }
+            },
+            annually: {
+                site1: { private: 1700, regional: 1068, parties: 276, inventory: 51000 },
+                site2: { private: 2232, regional: 804, parties: 372, inventory: 68160 },
+                site3: { private: 2436, regional: 1488, parties: 492, inventory: 82680 }
+            }
+        };
+
+        function selectPeriod(period) {
+            // Update active button
+            document.querySelectorAll('.period-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update values
+            const periodData = data[period];
+            
+            // Update site values
+            document.getElementById('site1-private').textContent = periodData.site1.private;
+            document.getElementById('site1-regional').textContent = periodData.site1.regional;
+            document.getElementById('site1-parties').textContent = periodData.site1.parties;
+            document.getElementById('site1-inventory').textContent = '$' + periodData.site1.inventory.toLocaleString();
+
+            document.getElementById('site2-private').textContent = periodData.site2.private;
+            document.getElementById('site2-regional').textContent = periodData.site2.regional;
+            document.getElementById('site2-parties').textContent = periodData.site2.parties;
+            document.getElementById('site2-inventory').textContent = '$' + periodData.site2.inventory.toLocaleString();
+
+            document.getElementById('site3-private').textContent = periodData.site3.private;
+            document.getElementById('site3-regional').textContent = periodData.site3.regional;
+            document.getElementById('site3-parties').textContent = periodData.site3.parties;
+            document.getElementById('site3-inventory').textContent = '$' + periodData.site3.inventory.toLocaleString();
+
+            // Update totals
+            const totalPrivate = periodData.site1.private + periodData.site2.private + periodData.site3.private;
+            const totalRegional = periodData.site1.regional + periodData.site2.regional + periodData.site3.regional;
+            const totalParties = periodData.site1.parties + periodData.site2.parties + periodData.site3.parties;
+            const totalInventory = periodData.site1.inventory + periodData.site2.inventory + periodData.site3.inventory;
+
+            document.getElementById('total-private').textContent = totalPrivate;
+            document.getElementById('total-regional').textContent = totalRegional;
+            document.getElementById('total-parties').textContent = totalParties;
+            document.getElementById('total-inventory').textContent = '$' + totalInventory.toLocaleString();
+        }
+    </script>
+</body>
+</html># SPL-MemberDashboard
